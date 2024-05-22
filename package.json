@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@galacean/engine": "^1.1.2",
+    "@galacean/engine-toolkit-controls": "^1.1.0",
     "@tauri-apps/api": "^1.5.6",
+    "dat.gui": "^0.7.9",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
@@ -17,6 +20,7 @@
   "devDependencies": {
     "@antv/g6": "^4.8.24",
     "@tauri-apps/cli": "^1.5.14",
+    "@types/dat.gui": "^0.7.13",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

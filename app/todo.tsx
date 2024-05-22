@@ -19,6 +19,10 @@ export default () => {
         router.push(`/detail?title=${item}`)
     }
 
+    const handleToDance = () => {
+        router.push(`/welcome`)
+    }
+
     return <div>
         <div className='mb-2'>今日的代办事项</div>
         <ul className='mt-5'>
@@ -29,6 +33,7 @@ export default () => {
                     } >{item}</li>
                 ) : <li className='text-3xl text-[red]'>请检查计划文本文件是否存在</li>
             }
+            <li className='cursor-pointer' onClick={handleToDance}>请欣赏舞蹈胡乱跳</li>
         </ul>
     </div>
 }
