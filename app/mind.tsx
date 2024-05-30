@@ -1,15 +1,12 @@
 "use client"
 import { useEffect, useRef } from 'react';
 import G6, { Graph } from '@antv/g6';
-import { useRouter } from 'next/navigation';
+import useBack from './hooks/useBack';
 
 export default function Mind(props: { title: string }) {
-
     const containerRef = useRef(null);
-    const router = useRouter();
     let graph: Graph | null = null;
     const lineDash = [4, 2, 1, 2];
-
     G6.registerEdge(
         'line-dash',
         {
@@ -97,12 +94,11 @@ export default function Mind(props: { title: string }) {
             graph && graph.destroy();
         };
     }, []);
-    const handleGoBack = () => {
-        router.back();
-    };
+
+    const [goBack] = useBack();
     return (
         <div className='w-full h-full flex flex-col items-center justify-center'>
-            <div className="absolute top-[10px] left-[10px] cursor-pointer" onClick={handleGoBack}>back</div>
+            <div className="absolute top-[10px] left-[10px] cursor-pointer" onClick={goBack}>back</div>
             <div className='my-10 text-red-800 text-3xl'>{props.title}</div>
             <div ref={containerRef} id="mind_container"></div>
         </div>

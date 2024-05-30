@@ -1,15 +1,25 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::fs::read_to_string;
-use std::fs::File;
-use std::io;
-use std::io::BufReader;
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    let context = tauri::generate_context!();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, say_hello, open_todo])
-        .run(tauri::generate_context!())
+        .menu(tauri::Menu::new())
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            say_hello,
+            open_todo
+        ])
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                event.window().hide().unwrap();
+                api.prevent_close();
+            }
+            _ => {}
+        })
+        .run(context)
         .expect("error while running tauri application");
 }
 
