@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-
 #[tokio::main]
 async fn main() {
     let context = tauri::generate_context!();
@@ -10,15 +9,10 @@ async fn main() {
         .invoke_handler(tauri::generate_handler![
             greet,
             say_hello,
-            open_todo
+            open_todo,
+            open_window_url,
+            open_window_route
         ])
-        .on_window_event(|event| match event.event() {
-            tauri::WindowEvent::CloseRequested { api, .. } => {
-                event.window().hide().unwrap();
-                api.prevent_close();
-            }
-            _ => {}
-        })
         .run(context)
         .expect("error while running tauri application");
 }
@@ -52,4 +46,27 @@ fn open_todo() -> Result<Vec<String>, String> {
 fn read_file(path: &str) -> Result<String, std::io::Error> {
     let content = std::fs::read_to_string(path)?;
     Ok(content)
+}
+
+#[tauri::command]
+async fn open_window_url(handle: tauri::AppHandle, url: String) {
+    tauri::WindowBuilder::new(
+        &handle,
+        "external", /* the unique window label */
+        tauri::WindowUrl::External(url.parse().unwrap()),
+    )
+    .build()
+    .unwrap();
+}
+
+#[tauri::command]
+async fn open_window_route(handle: tauri::AppHandle, path: String) {
+    tauri::WindowBuilder::new(
+        &handle,
+        "external", /* the unique window label */
+        tauri::WindowUrl::App(path.into()),
+    )
+    .center()
+    .build()
+    .unwrap();
 }

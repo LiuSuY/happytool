@@ -1,11 +1,11 @@
 'use client'
 import { invoke } from '@tauri-apps/api/tauri'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default () => {
     const router = useRouter();
+  
     const [todo_txt, set_todo_txt] = useState<Array<string>>([]);
     useEffect(() => {
         invoke<Array<string>>('open_todo')
@@ -23,8 +23,17 @@ export default () => {
         router.push(`/welcome`)
     }
 
+    const handleOpenUrl = () => {
+        invoke("open_window_url",{url:"https://tauri.app/"})
+    }
+    const handleOpenRoute = () => {
+        invoke("open_window_route",{path:"/chat"})
+    }
+
     return <div>
         <div className='mb-2'>今日的代办事项</div>
+        <div className='h3' onClick={handleOpenUrl}>openUrl</div>
+        <div className='h3' onClick={handleOpenRoute}>openChat</div>
         <ul className='mt-5'>
             {
                 todo_txt?.length !== 0 ? todo_txt?.map((item) =>
