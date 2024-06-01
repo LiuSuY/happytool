@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use tauri::Manager;
 
 #[tokio::main]
 async fn main() {
@@ -11,7 +12,8 @@ async fn main() {
             say_hello,
             open_todo,
             open_window_url,
-            open_window_route
+            open_window_route,
+            close_window
         ])
         .run(context)
         .expect("error while running tauri application");
@@ -52,7 +54,7 @@ fn read_file(path: &str) -> Result<String, std::io::Error> {
 async fn open_window_url(handle: tauri::AppHandle, url: String) {
     tauri::WindowBuilder::new(
         &handle,
-        "external", /* the unique window label */
+        "url", /* the unique window label */
         tauri::WindowUrl::External(url.parse().unwrap()),
     )
     .build()
@@ -63,10 +65,21 @@ async fn open_window_url(handle: tauri::AppHandle, url: String) {
 async fn open_window_route(handle: tauri::AppHandle, path: String) {
     tauri::WindowBuilder::new(
         &handle,
-        "external", /* the unique window label */
+        "chat", /* the unique window label */
         tauri::WindowUrl::App(path.into()),
     )
     .center()
     .build()
     .unwrap();
+}
+
+#[tauri::command]
+fn close_window(handle: tauri::AppHandle, name: &str) {
+    println!("{}", name);
+    if let Some(main_window) = handle.get_window(name) {
+        match main_window.close() {
+            Ok(_) => (),
+            Err(e) => println!("close error {}", e),
+        }
+    }
 }
