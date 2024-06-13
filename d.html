@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.7.10/vue.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .conteudo {
+            width: 100%;
+        }
+
+        .carrousel {
+            transition: .8s ease;
+            display: flex;
+        }
+
+        .card {
+            min-height: 200px;
+            min-width: 80%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .content {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card .content:nth-child(odd) {
+            background: linear-gradient(-229deg, #fbd53d, #ef3a7b);
+        }
+
+        .card .content:nth-child(even) {
+            background: linear-gradient(-229deg, #ff70af, #5fa8f5);
+        }
+
+        .card:first-child {
+            padding-left: 0;
+        }
+
+        .card:last-child {
+            padding-right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="conteudo ">
+        <div class="carrousel">
+            <div class="card">
+                <h1 class="content">HTML</h1>
+            </div>
+            <div class="card">
+                <h1 class="content">CSS</h1>
+            </div>
+            <div class="card">
+                <h1 class="content">JS</h1>
+            </div>
+            <div class="card">
+                <h1 class="content">REACT</h1>
+            </div>
+            <div class="card">
+                <h1 class="content">NODE</h1>
+            </div>
+            <div class="card">
+                <h1 class="content">VUE</h1>
+            </div>
+        </div>
+    </div>
+    <div id="app">
+        {{name}}
+        {{nameage}}
+    </div>
+</body>
+<script>
+    const doms = {
+        slideWrapper: document.querySelector('.carrousel'),
+        list: document.querySelectorAll('.carrousel .card'),
+    }
+
+    function moveTo(i) {
+        if (i == 0) {
+            doms.slideWrapper.style.transform = `translateX(-0px)`;
+        } else if (i == doms.list.length - 1) {
+            doms.slideWrapper.style.transform = `translateX(-${(i * 80) - 20}%)`;
+        } else {
+            doms.slideWrapper.style.transform = `translateX(-${(i * 80) - 10}%)`;
+        }
+    }
+
+
+    let flag = true;
+    function autoplay(flag) {
+        let i = 0;
+        return setInterval(() => {
+            moveTo(i);
+            if (i < (doms.list.length - 1) && flag) {
+                i++;
+            } else if (i == (doms.list.length - 1)) {
+                flag = !flag;
+                i--;
+            } else {
+                i--;
+            }
+        }, 1000)
+    }
+    let res = autoplay(flag);
+
+    doms.slideWrapper.addEventListener("mouseenter", () => {
+        clearInterval(res);
+    });
+
+    doms.slideWrapper.addEventListener("mouseleave", () => {
+        res = autoplay(flag);
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                name: 'wangergou',
+                age: 19
+            }
+        },
+        computed: {
+            nameage: function() {
+                return this.name + this.age;
+            }
+        },
+        beforeCreate() {
+            console.log(this.$el,this.$data,'SSS')
+            setTimeout(()=> {
+                console.log(this.$el,this.$data,'111-222-SSS')
+            })
+        },
+        created() {
+            console.log(this.$el,this.$data,111)
+            setTimeout(()=> {
+                console.log(this.$el,this.$data,'111-222')
+            })
+        },
+        beforeMount() {
+            console.log(this.$el,this.$data,111)
+        },
+        mounted(){
+            console.log(this.$el,this.$data,111)
+        }
+    })
+
+    console.log(app)
+
+</script>
+
+</html>

@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
 
-export default () => {
+const Todo = () => {
     const router = useRouter();
-
     const [todo_txt, set_todo_txt] = useState<Array<string>>([]);
     useEffect(() => {
         invoke<Array<string>>('open_todo')
@@ -21,7 +20,7 @@ export default () => {
     }
 
     const handleToDance = () => {
-        router.push(`/welcome`)
+        router.push(`/welcome`);
     }
 
     const handleOpenUrl = () => {
@@ -37,8 +36,9 @@ export default () => {
         invoke("close_window", { name: "chat" })
     }
 
+
     return <div>
-        <div className='mb-2'>今日的代办事项</div>
+        <div className='mb-2'>代办事项</div>
         <div className='h3' onClick={handleOpenUrl}>openUrl</div>
         <div className='h3' onClick={handleOpenRoute}>openChat</div>
         <div className='h3' onClick={handleCloseWindow}>closeWindow</div>
@@ -48,9 +48,14 @@ export default () => {
                     <li className='cursor-pointer' key={item} onClick={() =>
                         handleToDetail(item)
                     } >{item}</li>
-                ) : <li className='text-3xl text-[red]'>请检查计划文本文件是否存在</li>
+                ) : <li className='text-1xl text-[red]'>请检查计划文本文件是否存在</li>
             }
             <li className='cursor-pointer' onClick={handleToDance}>请欣赏舞蹈胡乱跳</li>
         </ul>
     </div>
 }
+
+
+Todo.displayName = "Todo";
+
+export default Todo;

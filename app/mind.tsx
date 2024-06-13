@@ -69,29 +69,29 @@ export default function Mind(props: { title: string }) {
 
     useEffect(() => {
         if (containerRef.current) {
-            graph = new G6.Graph({
-                container: containerRef.current,
-                width: 800,
-                height: 400,
-                defaultEdge: {
-                    type: 'line-dash',
-                    style: {
-                        stroke: 'red',
-                        lineWidth: 2,
-                    },
-                    labelCfg: {
-                        position: 'start',
-                        refY: +10,
-                    },
-                },
-            });
+            // graph = new G6.Graph({
+            //     container: containerRef.current,
+            //     width: 800,
+            //     height: 400,
+            //     defaultEdge: {
+            //         type: 'line-dash',
+            //         style: {
+            //             stroke: 'red',
+            //             lineWidth: 2,
+            //         },
+            //         labelCfg: {
+            //             position: 'start',
+            //             refY: +10,
+            //         },
+            //     },
+            // });
 
-            graph.data(data);
-            graph.render();
+            // graph.data(data);
+            // graph.render();
         }
 
         return () => {
-            graph && graph.destroy();
+            // graph && graph.destroy();
         };
     }, []);
 

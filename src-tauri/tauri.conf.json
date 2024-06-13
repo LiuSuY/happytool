@@ -31,10 +31,11 @@
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "exists": true
+        "exists": true,
+        "scope": ["$RESOURCE/*"]
       },
       "window": {
-        "all": false,
+        "all": true,
         "close": true,
         "hide": true,
         "show": true,
@@ -43,6 +44,7 @@
         "minimize": true,
         "unmaximize": true,
         "unminimize": true,
+        "setResizable": true,
         "startDragging": true
       }
     },
@@ -61,7 +63,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "resources":["assets/*"],
+      "identifier": "com.tauri-app.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -70,7 +73,6 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
       "shortDescription": "",
       "targets": "all",
       "windows": {
@@ -87,11 +89,12 @@
     },
     "windows": [
       {
-        "fullscreen": false,
         "height": 600,
         "resizable": false,
         "title": "happytool",
-        "width": 300
+        "width": 300,
+        "x": 0,
+        "y": 10
       }
     ]
   }

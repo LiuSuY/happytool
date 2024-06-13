@@ -1,9 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use tauri::Manager;
+mod audio_service;
+use audio_service::{AudioEvent, AudioService};
+use tokio::sync::broadcast::Sender;
 
 #[tokio::main]
 async fn main() {
+    let audio_service = AudioService::new();
     let context = tauri::generate_context!();
     tauri::Builder::default()
         .menu(tauri::Menu::new())
@@ -13,8 +17,11 @@ async fn main() {
             open_todo,
             open_window_url,
             open_window_route,
-            close_window
+            close_window,
+            play_audio
         ])
+        .manage(audio_service.event_sender) // share
+        .manage(audio_service.sink)
         .run(context)
         .expect("error while running tauri application");
 }
@@ -31,8 +38,11 @@ fn say_hello() -> String {
 }
 
 #[tauri::command]
-fn open_todo() -> Result<Vec<String>, String> {
-    let s = read_file("./todo.txt");
+fn open_todo(handle: tauri::AppHandle) -> Result<Vec<String>, String> {
+    let resource_path = handle.path_resolver()
+      .resolve_resource("./assets/todo.txt")
+      .expect("failed to resolve resource");
+    let s = read_file(resource_path.to_str().unwrap());
     match s {
         Ok(content) => {
             let mut s = Vec::new();
@@ -73,6 +83,7 @@ async fn open_window_route(handle: tauri::AppHandle, path: String) {
     .unwrap();
 }
 
+
 #[tauri::command]
 fn close_window(handle: tauri::AppHandle, name: &str) {
     println!("{}", name);
@@ -81,5 +92,29 @@ fn close_window(handle: tauri::AppHandle, name: &str) {
             Ok(_) => (),
             Err(e) => println!("close error {}", e),
         }
+    }
+}
+
+#[tauri::command] 
+fn play_audio(handle: tauri::AppHandle,sender: tauri::State<Sender<AudioEvent>>, event: String) {
+    let event: serde_json::Value = serde_json::from_str(&event).unwrap();
+    if let Some(action) = event["action"].as_str() {
+        match action {
+            "play" => event["file_path"]
+                .as_str()
+                .map(|file_path| {
+                    let resource_path = handle.path_resolver()
+                    .resolve_resource(file_path)
+                    .expect("failed to resolve resource");
+                    sender.send(AudioEvent::Play(resource_path.to_str().unwrap().to_string()))
+                }
+                ),
+            "pause" => Some(sender.send(AudioEvent::Pause)),
+            "recovery" => Some(sender.send(AudioEvent::Recovery)),
+            "volume" => event["volume"]
+                .as_f64()
+                .map(|volume| sender.send(AudioEvent::Volume(volume as f32))),
+            _ => None, // other actions
+        };
     }
 }

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .conteudo {
+            width: 100%;
+        }
+
+        .carrousel {
+            transition: .8s ease;
+            display: flex;
+        }
+
+        .card {
+            border-radius: 30px;
+            min-height: 200px;
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:nth-child(odd) {
+            background: linear-gradient(-229deg, #fbd53d, #ef3a7b);
+        }
+
+        .card:nth-child(even) {
+            background: linear-gradient(-229deg, #ff70af, #5fa8f5);
+        }
+
+        .card {
+
+            &:first-of-type {
+                background: red;
+            }
+
+            &:last-of-type {
+                background: green;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="conteudo ">
+        <div class="carrousel">
+            <div class="card">
+                <h1>HTML</h1>
+            </div>
+            <div class="card">
+                <h1>CSS</h1>
+            </div>
+            <div class="card">
+                <h1>JS</h1>
+            </div>
+            <div class="card">
+                <h1>REACT</h1>
+            </div>
+            <div class="card">
+                <h1>NODE</h1>
+            </div>
+            <div class="card">
+                <h1>VUE</h1>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const doms = {
+        slideWrapper: document.querySelector('.carrousel'),
+        list: document.querySelectorAll('.carrousel .card'),
+    }
+
+    function moveTo(i) {
+        doms.slideWrapper.style.transform = `translateX(-${i * 100}%)`;
+    }
+
+    function autoplay() {
+        let i = 0;
+        let flag = true;
+        let t = setInterval(() => {
+            moveTo(i);
+            if (i < 5 && flag) {
+                i++;
+            } else if (i == 5) {
+                flag = !flag;
+                i--;
+            } else {
+                i--;
+                if (i == 0) {
+                    clearInterval(t)
+                }
+            }
+        }, 1000)
+    }
+    autoplay();
+</script>
+
+</html>

@@ -1,10 +1,18 @@
 "use client";
-import Mind from '@/app/mind'
+// import Mind from '@/app/mind'
 import { useSearchParams } from 'next/navigation';
-export default () => {
-    const searchParams  = useSearchParams();
-    const title = searchParams.get("title") || 'title';
+// import { Suspense } from 'react';
+const Detail = () => {
+    // const searchParams = useSearchParams();
+    // const title = searchParams.get("title") || 'title';
     return <div className='min-h-screen'>
-        <Mind title={title} />
+        {/* <Suspense>
+            <Mind title={title} />
+        </Suspense> */}
+        hello world
     </div>
 }
+
+Detail.displayName = "Detail";
+
+export default Detail;
