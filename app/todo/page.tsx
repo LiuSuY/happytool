@@ -37,8 +37,12 @@ const Todo = () => {
     }
 
 
-    return <div>
+    return <div className='flex min-h-screen flex-col items-center justify-between pt-24'>
         <div className='mb-2'>代办事项</div>
+
+        <div className=''>
+            <input type="text" />
+        </div>
         <div className='h3' onClick={handleOpenUrl}>openUrl</div>
         <div className='h3' onClick={handleOpenRoute}>openChat</div>
         <div className='h3' onClick={handleCloseWindow}>closeWindow</div>

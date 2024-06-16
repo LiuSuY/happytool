@@ -1,11 +1,10 @@
 "use client"
 import { useEffect, useRef } from 'react';
-import G6, { Graph } from '@antv/g6';
-import useBack from './hooks/useBack';
+import G6 from '@antv/g6';
+import useBack from '../hooks/useBack';
 
 export default function Mind(props: { title: string }) {
     const containerRef = useRef(null);
-    let graph: Graph | null = null;
     const lineDash = [4, 2, 1, 2];
     G6.registerEdge(
         'line-dash',
@@ -66,33 +65,32 @@ export default function Mind(props: { title: string }) {
             },
         ],
     };
-
     useEffect(() => {
         if (containerRef.current) {
-            // graph = new G6.Graph({
-            //     container: containerRef.current,
-            //     width: 800,
-            //     height: 400,
-            //     defaultEdge: {
-            //         type: 'line-dash',
-            //         style: {
-            //             stroke: 'red',
-            //             lineWidth: 2,
-            //         },
-            //         labelCfg: {
-            //             position: 'start',
-            //             refY: +10,
-            //         },
-            //     },
-            // });
+            const graphInstance = new G6.Graph({
+                container: containerRef.current,
+                width: 800,
+                height: 400,
+                defaultEdge: {
+                    type: 'line-dash',
+                    style: {
+                        stroke: 'red',
+                        lineWidth: 2,
+                    },
+                    labelCfg: {
+                        position: 'start',
+                        refY: +10,
+                    },
+                },
+            });
 
-            // graph.data(data);
-            // graph.render();
+            graphInstance.data(data);
+            graphInstance.render();
+
+            return () => {
+                graphInstance.destroy();
+            };
         }
-
-        return () => {
-            // graph && graph.destroy();
-        };
     }, []);
 
     const [goBack] = useBack();
