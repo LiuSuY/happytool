@@ -2,7 +2,6 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
 
 const Todo = () => {
     const router = useRouter();
@@ -32,30 +31,41 @@ const Todo = () => {
 
     const handleCloseWindow = () => {
         // const mainWindow = WebviewWindow.getByLabel('chat')
-        // mainWindow?.close();
         invoke("close_window", { name: "chat" })
     }
+    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const newTodo = e.currentTarget.value;
+        if (e.key === 'Enter' && newTodo) {
+            set_todo_txt([...todo_txt, newTodo]);
+            e.currentTarget.value = '';
+            await invoke('write_todo', { todos: [...todo_txt, newTodo] })
+        }
+    }
+    const handleDel = async (text: string) => {
+        const res = delArrEl(todo_txt, text);
+        set_todo_txt([...res]);
+    }
 
+    const delArrEl = (arr: Array<string>, target: string) => {
+        return arr.filter(item => item !== target);
+    }
 
-    return <div className='flex min-h-screen flex-col items-center justify-between pt-24'>
-        <div className='mb-2'>代办事项</div>
-
-        <div className=''>
-            <input type="text" />
+    return <div className='flex min-h-screen flex-col items-center justify-between py-24'>
+        <div>
+            <input type="text" placeholder='请输入你的计划' onKeyDown={handleKeyDown} />
+            <ul className='mt-5'>
+                {
+                    todo_txt?.map((item) =>
+                        <li className='cursor-pointer' key={item}  >
+                            <span onClick={() =>
+                                handleToDetail(item)
+                            }> {item}</span> <span onClick={() => handleDel(item)}>del</span>
+                        </li>
+                    )
+                }
+            </ul>
         </div>
-        <div className='h3' onClick={handleOpenUrl}>openUrl</div>
-        <div className='h3' onClick={handleOpenRoute}>openChat</div>
-        <div className='h3' onClick={handleCloseWindow}>closeWindow</div>
-        <ul className='mt-5'>
-            {
-                todo_txt?.length !== 0 ? todo_txt?.map((item) =>
-                    <li className='cursor-pointer' key={item} onClick={() =>
-                        handleToDetail(item)
-                    } >{item}</li>
-                ) : <li className='text-1xl text-[red]'>请检查计划文本文件是否存在</li>
-            }
-            <li className='cursor-pointer' onClick={handleToDance}>请欣赏舞蹈胡乱跳</li>
-        </ul>
+
     </div>
 }
 

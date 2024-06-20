@@ -4,6 +4,8 @@ use tauri::Manager;
 mod audio_service;
 use audio_service::{AudioEvent, AudioService};
 use tokio::sync::broadcast::Sender;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 #[tokio::main]
 async fn main() {
@@ -12,13 +14,12 @@ async fn main() {
     tauri::Builder::default()
         .menu(tauri::Menu::new())
         .invoke_handler(tauri::generate_handler![
-            greet,
-            say_hello,
             open_todo,
             open_window_url,
             open_window_route,
             close_window,
-            play_audio
+            play_audio,
+            write_todo
         ])
         .manage(audio_service.event_sender) // share
         .manage(audio_service.sink)
@@ -26,16 +27,6 @@ async fn main() {
         .expect("error while running tauri application");
 }
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}!", name)
-}
-
-#[tauri::command]
-fn say_hello() -> String {
-    println!("hello world");
-    "hello world say hello".into()
-}
 
 #[tauri::command]
 fn open_todo(handle: tauri::AppHandle) -> Result<Vec<String>, String> {
@@ -75,7 +66,7 @@ async fn open_window_url(handle: tauri::AppHandle, url: String) {
 async fn open_window_route(handle: tauri::AppHandle, path: String) {
     tauri::WindowBuilder::new(
         &handle,
-        "chat", /* the unique window label */
+        path.clone(), /* the unique window label */
         tauri::WindowUrl::App(path.into()),
     )
     .center()
@@ -116,5 +107,17 @@ fn play_audio(handle: tauri::AppHandle,sender: tauri::State<Sender<AudioEvent>>,
                 .map(|volume| sender.send(AudioEvent::Volume(volume as f32))),
             _ => None, // other actions
         };
+    }
+}
+
+#[tauri::command]
+fn write_todo(handle: tauri::AppHandle,todos: Vec<String>) {
+    let resource_path = handle.path_resolver()
+      .resolve_resource("./assets/todo.txt")
+      .expect("failed to resolve resource");
+    let resource_path_str = resource_path.to_str().unwrap();
+    let mut file = OpenOptions::new().append(true).open(resource_path_str).unwrap();
+    for todo in todos {
+        writeln!(file,"{}", todo).unwrap();
     }
 }

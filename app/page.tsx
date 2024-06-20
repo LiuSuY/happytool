@@ -1,6 +1,4 @@
 import PickList from '@com/pickList'
-import { useState } from 'react';
-
 export type pickListItem = {
   handleName: string,
   pagePath: string

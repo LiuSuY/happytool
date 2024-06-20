@@ -1,14 +1,12 @@
 "use client";
-import { useRouter } from 'next/navigation';
+import { invoke } from '@tauri-apps/api/tauri'
 import React from 'react';
 import { pickListItem } from '../page';
 
 const PickList = ({ title, list }: { title: string, list: Array<pickListItem> }) => {
-    const currentRouter = useRouter();
     const handleTo = (path: string) => {
-        currentRouter.push(path)
+        invoke("open_window_route", { path })
     };
-    console.log(list)
 
     return <div>
         <h3 className='text-lg text-red-600 pb-8'>{title} </h3>

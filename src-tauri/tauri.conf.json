@@ -32,7 +32,7 @@
         "removeFile": true,
         "renameFile": true,
         "exists": true,
-        "scope": ["$RESOURCE/*"]
+        "scope": ["$assets/*"]
       },
       "window": {
         "all": true,
